@@ -1,36 +1,134 @@
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KADRY AUTO | Selezione Veicoli Premium</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <style>
+        /* Smooth Cinematic Intro */
+        #smooth-intro {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #050505;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            transition: transform 1.2s cubic-bezier(0.7, 0, 0.3, 1);
+            flex-direction: column;
+        }
+
+        .intro-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(40px, 10vw, 80px);
+            color: var(--accent);
+            opacity: 0;
+            transform: scale(0.8);
+            animation: logoReveal 2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        @keyframes logoReveal {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .loading-container {
+            width: 200px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.2);
+            margin-top: 20px;
+            border-radius: 2px;
+            overflow: hidden;
+            opacity: 0;
+            animation: fadeIn 0.5s ease 0.5s forwards;
+        }
+
+        .loading-bar {
+            width: 0%;
+            height: 100%;
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent);
+            animation: loadProgress 2.2s cubic-bezier(0.7, 0, 0.3, 1) forwards;
+        }
+
+        @keyframes loadProgress {
+            0% {
+                width: 0%;
+            }
+
+            100% {
+                width: 100%;
+            }
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .intro-hidden {
+            transform: translateY(-100%);
+        }
+
         :root {
             --bg: #0a0a0b;
             --card-bg: #161618;
-            --accent: #c5a059; 
+            --accent: #c5a059;
             --accent-glow: rgba(197, 160, 89, 0.2);
             --text-main: #ffffff;
             --text-dim: #a0a0a0;
             --glass: rgba(255, 255, 255, 0.05);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
 
         body {
             background-color: var(--bg);
             color: var(--text-main);
             line-height: 1.6;
             overflow-x: hidden;
+            /* Hide scrollbar during intro */
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        body.intro-finished {
+            height: auto;
+            overflow-x: hidden;
+            overflow-y: auto;
         }
 
         /* Scrollbar Personalizzata */
-        ::-webkit-scrollbar { width: 10px; }
-        ::-webkit-scrollbar-track { background: var(--bg); }
-        ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 5px; }
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 5px;
+        }
 
         header {
             padding: 15px 8%;
@@ -68,9 +166,9 @@
             background: transparent;
         }
 
-        .contact-top:hover { 
-            background: var(--accent); 
-            color: var(--bg); 
+        .contact-top:hover {
+            background: var(--accent);
+            color: var(--bg);
             box-shadow: 0 0 20px var(--accent-glow);
             transform: scale(1.05);
         }
@@ -91,40 +189,43 @@
             font-family: 'Playfair Display', serif;
             font-size: clamp(35px, 8vw, 75px);
             background: linear-gradient(to bottom, #fff 40%, #888 100%);
+            background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 15px;
             animation: fadeInDown 1s ease;
         }
 
-        .search-container { 
-            width: 100%; 
-            max-width: 550px; 
+        .search-container {
+            width: 100%;
+            max-width: 550px;
             margin-top: 25px;
             animation: fadeInUp 1s ease 0.2s backwards;
         }
-        
+
         .search-container input {
             width: 100%;
             padding: 18px 30px;
             border-radius: 50px;
             border: 1px solid var(--glass);
-            background: rgba(255,255,255,0.03);
+            background: rgba(255, 255, 255, 0.03);
             color: white;
             outline: none;
             transition: 0.3s;
             font-size: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
-        
-        .search-container input:focus { 
-            border-color: var(--accent); 
-            background: rgba(255,255,255,0.07);
+
+        .search-container input:focus {
+            border-color: var(--accent);
+            background: rgba(255, 255, 255, 0.07);
             box-shadow: 0 0 25px var(--accent-glow);
         }
 
-        .container { padding: 60px 8%; }
-        
+        .container {
+            padding: 60px 8%;
+        }
+
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
@@ -141,31 +242,67 @@
             color: inherit;
             display: flex;
             flex-direction: column;
+            flex-direction: column;
             animation: fadeInUp 0.8s ease backwards;
+            position: relative;
+            z-index: 1;
         }
 
-        .card:hover { 
-            transform: translateY(-15px); 
+        .card::before,
+        .service-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: inherit;
+            padding: 2px;
+            /* Border width */
+            background: radial-gradient(800px circle at var(--mouse-x) var(--mouse-y),
+                    rgba(197, 160, 89, 0.6),
+                    transparent 40%);
+            -webkit-mask:
+                linear-gradient(#fff 0 0) content-box,
+                linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            z-index: 2;
+            opacity: 0;
+            transition: opacity 0.5s;
+            pointer-events: none;
+        }
+
+        .card:hover::before,
+        .service-card:hover::before {
+            opacity: 1;
+        }
+
+        .card:hover {
+            transform: translateY(-15px);
             border-color: var(--accent);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
         }
 
-        .img-box { 
-            width: 100%; 
-            height: 240px; 
-            background: #111; 
-            overflow: hidden; 
+        .img-box {
+            width: 100%;
+            height: 240px;
+            background: #111;
+            overflow: hidden;
             position: relative;
         }
-        
-        .img-box img { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: cover; 
-            transition: 0.8s cubic-bezier(0.2, 1, 0.3, 1); 
+
+        .img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: 0.8s cubic-bezier(0.2, 1, 0.3, 1);
         }
-        
-        .card:hover .img-box img { transform: scale(1.1); }
+
+        .card:hover .img-box img {
+            transform: scale(1.1);
+        }
 
         .price-badge {
             position: absolute;
@@ -177,42 +314,50 @@
             border-radius: 12px;
             font-weight: 800;
             font-size: 18px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
 
-        .content { padding: 30px; flex-grow: 1; display: flex; flex-direction: column; }
-        
-        .tag { 
-            color: var(--accent); 
-            font-size: 12px; 
-            font-weight: 700; 
-            text-transform: uppercase; 
-            margin-bottom: 10px; 
+        .content {
+            padding: 30px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tag {
+            color: var(--accent);
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 10px;
             letter-spacing: 1px;
             display: flex;
             align-items: center;
             gap: 6px;
         }
 
-        .car-name { 
-            font-size: 22px; 
-            font-family: 'Playfair Display', serif; 
-            margin-bottom: 15px; 
+        .car-name {
+            font-size: 22px;
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 15px;
             height: 60px;
             line-height: 1.2;
         }
 
-        .details { 
-            font-size: 14px; 
-            color: var(--text-dim); 
-            display: flex; 
-            justify-content: space-between; 
-            border-top: 1px solid var(--glass); 
-            padding-top: 20px; 
-            margin-top: auto; 
+        .details {
+            font-size: 14px;
+            color: var(--text-dim);
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid var(--glass);
+            padding-top: 20px;
+            margin-top: auto;
         }
 
-        .details i { color: var(--accent); margin-right: 5px; }
+        .details i {
+            color: var(--accent);
+            margin-right: 5px;
+        }
 
         /* Floating WhatsApp Button */
         .whatsapp-btn {
@@ -232,46 +377,259 @@
             z-index: 1000;
             transition: 0.3s;
         }
-        
-        .whatsapp-btn:hover { transform: scale(1.1); }
 
-        footer { 
-            padding: 100px 8% 50px; 
-            background: linear-gradient(to top, #000, var(--bg));
-            border-top: 1px solid var(--glass); 
-            text-align: center; 
+        .whatsapp-btn:hover {
+            transform: scale(1.1);
         }
 
-        .footer-tel { 
-            font-size: clamp(30px, 5vw, 45px); 
-            color: var(--accent); 
-            text-decoration: none; 
-            font-weight: 800; 
-            display: block; 
-            margin: 20px 0; 
+        footer {
+            padding: 100px 8% 50px;
+            background: linear-gradient(to top, #000, var(--bg));
+            border-top: 1px solid var(--glass);
+            text-align: center;
+        }
+
+        .footer-tel {
+            font-size: clamp(30px, 5vw, 45px);
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 800;
+            display: block;
+            margin: 20px 0;
             transition: 0.3s;
         }
 
-        .footer-tel:hover { transform: scale(1.05); filter: brightness(1.2); }
+        .footer-tel:hover {
+            transform: scale(1.05);
+            filter: brightness(1.2);
+        }
 
         /* Animations */
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-30px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        @media (max-width: 768px) { 
-            .grid { grid-template-columns: 1fr; } 
-            header { padding: 15px 5%; }
-            .hero { height: 35vh; }
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            header {
+                padding: 15px 5%;
+            }
+
+            .hero {
+                height: 35vh;
+            }
+        }
+
+        /* Sold Out Style */
+        .sold-out {
+            opacity: 0.7;
+            pointer-events: none;
+            filter: grayscale(0.8);
+            position: relative;
+        }
+
+        .sold-out::after {
+            content: 'VENDUTO';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-15deg);
+            font-size: 3rem;
+            color: #ff4444;
+            font-weight: 900;
+            border: 5px solid #ff4444;
+            padding: 10px 20px;
+            z-index: 10;
+            opacity: 0.8;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 5px;
+        }
+
+        /* Premium Card Animation */
+        .premium-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .premium-card .img-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.3) 100%);
+            transform: skewX(-25deg);
+            z-index: 2;
+            transition: none;
+        }
+
+        .premium-card:hover .img-box::before {
+            animation: shine 0.75s;
+        }
+
+        @keyframes shine {
+            100% {
+                left: 150%;
+            }
+        }
+
+        .premium-card:hover {
+            box-shadow: 0 0 30px var(--accent-glow), 0 0 15px rgba(197, 160, 89, 0.3);
+            border-color: var(--accent);
+            transform: translateY(-15px) scale(1.02);
+        }
+
+        /* Services Section */
+        .services-section {
+            padding: 80px 8%;
+            background: #0f0f10;
+            text-align: center;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(30px, 5vw, 45px);
+            margin-bottom: 50px;
+            color: var(--text-main);
+        }
+
+        .section-title span {
+            color: var(--accent);
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .service-card {
+            background: var(--card-bg);
+            padding: 40px 20px;
+            border-radius: 20px;
+            border: 1px solid var(--glass);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            z-index: 1;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .service-icon {
+            font-size: 40px;
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+
+        .service-card h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .service-card p {
+            color: var(--text-dim);
+            font-size: 14px;
+        }
+
+        /* Why Us Section */
+        .why-us {
+            padding: 80px 8%;
+            display: flex;
+            align-items: center;
+            gap: 50px;
+            flex-wrap: wrap;
+        }
+
+        .why-text {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .why-visual {
+            flex: 1;
+            min-width: 300px;
+            height: 400px;
+            background: linear-gradient(45deg, #111, #222);
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .why-visual i {
+            font-size: 100px;
+            color: var(--glass);
+        }
+
+        /* Contact Section Visual */
+        .contact-section {
+            padding: 80px 8%;
+            background: radial-gradient(circle at center, #1a1a1d 0%, #0a0a0b 100%);
+            text-align: center;
+            border-top: 1px solid var(--glass);
+        }
+
+        .contact-box {
+            max-width: 600px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 24px;
+            border: 1px solid var(--glass);
+        }
+
+        .hidden {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .show {
+            opacity: 1;
+            transform: translateY(0);
         }
     </style>
 </head>
+
 <body>
+
+    <!-- Smooth Intro Overlay -->
+    <div id="smooth-intro">
+        <h1 class="intro-logo">KADRY AUTO</h1>
+        <div class="loading-container">
+            <div class="loading-bar"></div>
+        </div>
+    </div>
 
     <header>
         <a href="#" class="logo">
@@ -285,14 +643,16 @@
     <section class="hero">
         <h1>Kadry Autos</h1>
         <div class="search-container">
-            <input type="text" id="carSearch" placeholder="Cerca il tuo stile (es. BMW, Audi...)" onkeyup="filterCars()">
+            <input type="text" id="carSearch" placeholder="Cerca il tuo stile (es. BMW, Audi...)"
+                onkeyup="filterCars()">
         </div>
     </section>
 
     <div class="container">
         <div class="grid" id="carGrid">
-            
-            <a href="https://www.subito.it/auto/audi-a3-2-0-16v-tdi-attraction-ferrara-632751020.htm" class="card" target="_blank">
+
+            <a href="https://www.subito.it/auto/audi-a3-2-0-16v-tdi-attraction-ferrara-632751020.htm" class="card"
+                target="_blank">
                 <div class="img-box">
                     <img src="macchina.avif" alt="Audi A3">
                     <div class="price-badge">1.900 €</div>
@@ -307,37 +667,40 @@
                 </div>
             </a>
 
-            <a href="https://www.subito.it/auto/opel-astra-1-6-16v-vvt-station-wagon-club-ferrara-633497846.htm" class="card" target="_blank">
+            <div class="card sold-out">
                 <div class="img-box">
                     <img src="macchina2.avif" alt="Opel Astra">
-                    <div class="price-badge">Subito.it</div>
+                    <div class="price-badge" style="background: #444;">VENDUTA</div>
                 </div>
                 <div class="content">
-                    <span class="tag"><i class="fa-solid fa-circle-check"></i> Disponibile</span>
-                    <h2 class="car-name">Opel Astra 1.6 16V VVT Station Wagon</h2>
+                    <span class="tag" style="color: #666;"><i class="fa-solid fa-circle-xmark"></i> Non
+                        Disponibile</span>
+                    <h2 class="car-name" style="color: #888;">Opel Astra 1.6 16V VVT Station Wagon</h2>
                     <div class="details">
                         <span><i class="fa-solid fa-location-dot"></i> Ferrara</span>
                         <span><i class="fa-solid fa-gas-pump"></i> Benzina</span>
                     </div>
                 </div>
-            </a>
+            </div>
 
-            <a href="https://www.subito.it/auto/lancia-musa-1-3-mjt-95-cv-dfn-gold-ferrara-634728234.htm" class="card" target="_blank">
+            <div class="card sold-out">
                 <div class="img-box">
                     <img src="macchina3.avif" alt="Lancia Musa">
-                    <div class="price-badge">2.800 €</div>
+                    <div class="price-badge" style="background: #444;">VENDUTA</div>
                 </div>
                 <div class="content">
-                    <span class="tag"><i class="fa-solid fa-circle-check"></i> Disponibile</span>
-                    <h2 class="car-name">Lancia MUSA 1.3 Mjt 95 CV DFN Gold</h2>
+                    <span class="tag" style="color: #666;"><i class="fa-solid fa-circle-xmark"></i> Non
+                        Disponibile</span>
+                    <h2 class="car-name" style="color: #888;">Lancia MUSA 1.3 Mjt 95 CV DFN Gold</h2>
                     <div class="details">
                         <span><i class="fa-solid fa-location-dot"></i> Riva del Po (FE)</span>
                         <span><i class="fa-solid fa-gas-pump"></i> Diesel</span>
                     </div>
                 </div>
-            </a>
+            </div>
 
-            <a href="https://www.subito.it/auto/bmw-320-320d-cat-touring-msport-ferrara-634728570.htm" class="card" target="_blank">
+            <a href="https://www.subito.it/auto/bmw-320-320d-cat-touring-msport-ferrara-634728570.htm" class="card"
+                target="_blank">
                 <div class="img-box">
                     <img src="macchina4.avif" alt="BMW 320d MSport">
                     <div class="price-badge">2.800 €</div>
@@ -355,12 +718,68 @@
         </div>
     </div>
 
+    <!-- Services Section -->
+    <section class="services-section hidden">
+        <h2 class="section-title">I Nostri <span>Servizi</span></h2>
+        <div class="services-grid">
+            <div class="service-card">
+                <i class="fa-solid fa-file-invoice-dollar service-icon"></i>
+                <h3>Finanziamenti in Sede</h3>
+                <p>Soluzioni finanziarie personalizzate con tassi agevolati per ogni esigenza.</p>
+            </div>
+            <div class="service-card">
+                <i class="fa-solid fa-shield-halved service-icon"></i>
+                <h3>Garanzia 12/24 Mesi</h3>
+                <p>Ogni veicolo è coperto da garanzia per offrirti la massima tranquillità.</p>
+            </div>
+            <div class="service-card">
+                <i class="fa-solid fa-car-on service-icon"></i>
+                <h3>Valutazione Usato</h3>
+                <p>Ritiriamo la tua auto usata garantendoti la migliore valutazione di mercato.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Us Section -->
+    <section class="why-us hidden">
+        <div class="why-text">
+            <h2 class="section-title">Perché Scegliere <span>Kadry Auto</span></h2>
+            <p style="color: var(--text-dim); margin-bottom: 20px;">
+                Da anni selezioniamo con cura le migliori auto usate per garantire affidabilità e sicurezza.
+                La nostra passione per i motori si traduce in un servizio clienti eccellente e trasparente.
+            </p>
+            <ul style="color: var(--text-dim); list-style: none;">
+                <li style="margin-bottom: 10px;"><i class="fa-solid fa-check"
+                        style="color: var(--accent); margin-right: 10px;"></i> Chilometri Certificati</li>
+                <li style="margin-bottom: 10px;"><i class="fa-solid fa-check"
+                        style="color: var(--accent); margin-right: 10px;"></i> Controlli Pre-Consegna</li>
+                <li style="margin-bottom: 10px;"><i class="fa-solid fa-check"
+                        style="color: var(--accent); margin-right: 10px;"></i> Assistenza Post-Vendita</li>
+            </ul>
+        </div>
+        <div class="why-visual">
+            <i class="fa-solid fa-handshake"></i>
+        </div>
+    </section>
+
+    <!-- Contact Visual Section -->
+    <section class="contact-section hidden">
+        <div class="contact-box">
+            <h2 class="section-title" style="margin-bottom: 20px; font-size: 30px;">Vieni a Trovarci</h2>
+            <p style="color: var(--text-dim); margin-bottom: 30px;">
+                Siamo a Riva del Po (FE). Prenota un appuntamento per visionare l'auto dei tuoi sogni.
+            </p>
+            <a href="tel:3926279993" class="contact-top" style="display: inline-block;">Richiedi Appuntamento</a>
+        </div>
+    </section>
+
     <a href="https://wa.me/393926279993" class="whatsapp-btn" target="_blank">
         <i class="fa-brands fa-whatsapp"></i>
     </a>
 
     <footer>
-        <p style="color: var(--accent); text-transform: uppercase; font-size: 14px; letter-spacing: 2px;">Contattaci Ora</p>
+        <p style="color: var(--accent); text-transform: uppercase; font-size: 14px; letter-spacing: 2px;">Contattaci Ora
+        </p>
         <a href="tel:3926279993" class="footer-tel">392 6279993</a>
         <p style="color: var(--text-dim); font-size: 18px;">Riva del Po (FE) | Kadry Auto</p>
         <p style="margin-top: 40px; font-size: 12px; color: #444; border-top: 1px solid #222; padding-top: 20px;">
@@ -382,6 +801,57 @@
                 }
             }
         }
+
+        /* Scroll Animation Observer */
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('show');
+                }
+            });
+        });
+
+        const hiddenElements = document.querySelectorAll('.hidden');
+        hiddenElements.forEach((el) => observer.observe(el));
+        /* Smooth Intro Logic */
+        window.addEventListener('load', () => {
+            const intro = document.getElementById('smooth-intro');
+            const body = document.body;
+
+            setTimeout(() => {
+                intro.classList.add('intro-hidden');
+                body.classList.add('intro-finished');
+            }, 3000); // Wait for loading bar
+        });
+
+        /* Special Card Animations (Spotlight + Tilt) */
+        const cards = document.querySelectorAll('.card, .service-card');
+
+        cards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                // Spotlight Logic
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+
+                // Refined 3D Tilt Logic
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = ((y - centerY) / 20) * -1; // Subtle rotation
+                const rotateY = (x - centerX) / 20;
+
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
+                card.style.transition = 'transform 0.5s ease';
+            });
+        });
     </script>
 </body>
+
 </html>
